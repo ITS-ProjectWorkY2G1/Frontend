@@ -7,15 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Home\**" />
+    <Content Remove="Pages\Home\**" />
+    <EmbeddedResource Remove="Pages\Home\**" />
+    <None Remove="Pages\Home\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MudBlazor" Version="6.0.13" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Models\Models.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\Home\" />
   </ItemGroup>
 
 </Project>
