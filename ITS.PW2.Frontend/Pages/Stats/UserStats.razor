@@ -10,9 +10,36 @@
 
 <PageTitle>User Stats</PageTitle>
 
-<h3>UserStats</h3>
+@if (!_context.HttpContext!.User.Identity!.IsAuthenticated)
+{
+    <h1>You're not supposed to be here</h1>
+}
+else
+{
+    @if (SessionList!.Count == 0)
+    {
+        <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+    }
+    <MudTable Items="SessionList" Hover Striped Bordered FixedHeader Dense>        
+        <HeaderContent>
+            <MudTh>SessionTime</MudTh>
+            <MudTh>SessionDistance</MudTh>
+            <MudTh>AvgHeartRate</MudTh>
+            <MudTh>PoolLaps</MudTh>
+            <MudTh>PoolLength</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.SessionTime</MudTd>
+            <MudTd>@context.SessionDistance</MudTd>
+            <MudTd>@context.AvgHeartRate</MudTd>
+            <MudTd>@context.PoolLaps</MudTd>
+            <MudTd>@context.PoolLength</MudTd>
+        </RowTemplate>
+    </MudTable>
+}
 
 @code {
+    private List<SessionModel>? SessionList = new List<SessionModel>();
 
     private string error = "";
 
@@ -28,7 +55,7 @@
             }
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            //x = await Http.GetFromJsonAsync<>($"{_conf["ApiLink"]}/api/Claim");
+            SessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"");
         }
         catch (Exception e)
         {
