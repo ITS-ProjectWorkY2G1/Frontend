@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "ITS.PW2.UserWebApplication": {
+    "ITS.PW2.Frontend": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

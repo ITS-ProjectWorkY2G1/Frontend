@@ -1,0 +1,8 @@
+﻿@inject IHttpContextAccessor _context
+<MudNavMenu>
+    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    @if (_context.HttpContext!.User.Identity!.IsAuthenticated)
+    {
+        <MudNavLink Href="UserStats" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.VerifiedUser">User Stats</MudNavLink>
+    }
+</MudNavMenu>

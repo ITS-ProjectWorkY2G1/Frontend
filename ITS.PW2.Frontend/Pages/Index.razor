@@ -1,0 +1,23 @@
+﻿@inject IHttpContextAccessor _context
+@page "/"
+
+<PageTitle>Index</PageTitle>
+
+@if (_context.HttpContext!.User.Identity!.IsAuthenticated)
+{
+    <MudText Typo="Typo.h3">Hello, @_context.HttpContext.User.Identity.Name</MudText>
+
+    <MudPaper Style="width:fit-content; border:solid; padding:10px; max-width:25vw">
+        @foreach (var claim in _context.HttpContext.User.Claims)
+        {
+            if (claim.Type == "email" || claim.Type == "role")
+            {
+                <MudText Typo="Typo.body1">@claim.Type: <b>@claim.Value</b></MudText>
+            }
+        }
+    </MudPaper>
+}
+else
+{
+    <MudText>Hello</MudText>
+}

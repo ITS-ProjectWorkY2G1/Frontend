@@ -1,0 +1,38 @@
+﻿@page "/UserStats"
+@using Microsoft.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+@using System.Net.Http.Headers;
+@inject IHttpContextAccessor _context
+@inject HttpClient Http
+@inject IHttpClientFactory _fact
+@inject IConfiguration _conf
+
+<PageTitle>User Stats</PageTitle>
+
+<h3>UserStats</h3>
+
+@code {
+
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
+
+            if (true)
+            {
+                Http = _fact.CreateClient(_conf["ApiLink"]);
+            }
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            //x = await Http.GetFromJsonAsync<>($"{_conf["ApiLink"]}/api/Claim");
+        }
+        catch (Exception e)
+        {
+            error = e.Message;
+        }
+    }
+}

@@ -1,6 +1,6 @@
 ﻿namespace Models
 {
-    public class Users
+    public class UserModel
     {
 
     }

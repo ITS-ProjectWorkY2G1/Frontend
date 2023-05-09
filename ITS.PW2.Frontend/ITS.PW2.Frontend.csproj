@@ -7,13 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Pages\Home\**" />
-    <Content Remove="Pages\Home\**" />
-    <EmbeddedResource Remove="Pages\Home\**" />
-    <None Remove="Pages\Home\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.15" />
     <PackageReference Include="MudBlazor" Version="6.0.13" />
   </ItemGroup>
 
