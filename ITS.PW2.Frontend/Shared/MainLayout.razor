@@ -9,27 +9,23 @@
     <MudAppBar Elevation="0" Dense>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Href="/" />
-        <MudSpacer />
+        <MudSpacer/>
         @if (!_context.HttpContext!.User.Identity!.IsAuthenticated)
         {
             <MudNavLink Style="width:fit-content"  Href="Authentication/Login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.SupervisedUserCircle" IconColor="Color.Inherit">Login</MudNavLink>
         }
         else
         {
-            <MudList Clickable="true">
-                <MudListItem Text="@_context.HttpContext.User.Identity.Name">
-                    <NestedList>
-                        <MudListItem Icon="@Icons.Material.Filled.Settings">
-                            Settings
-                        </MudListItem>
-                        <MudListItem Icon="@Icons.Material.Filled.Logout">
-                            Logout
-                        </MudListItem>
-                    </NestedList>
-                </MudListItem>
-            </MudList>
-            @*<MudNavLink Style="width:fit-content" Href="Authentication/Logout" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Inherit"></MudNavLink>*@
-        }
+            <MudMenu FullWidth="true">
+                <ActivatorContent>
+                    <MudChip Icon="@Icons.Material.Filled.Person" Style="@($"color:{Colors.Shades.White}")">@_context.HttpContext.User.Identity.Name</MudChip>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudNavLink Href="/profile">Profile</MudNavLink>
+                    <MudNavLink Href="Authentication/Logout" Match="NavLinkMatch.All" IconColor="Color.Inherit">Sign out</MudNavLink>
+                </ChildContent>
+            </MudMenu>
+         }
 
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always" Breakpoint="Breakpoint.Xxl">
