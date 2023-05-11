@@ -17,6 +17,6 @@ For our websites we planned to use:
  - Blazor .NET
  - MudBlazor
 
-The idea behind this decision is because everyone of us has used Blazor during our period of stage and also because we learned it here at the course.
+The idea behind this decision is because everyone of us has used Blazor during our internship and also because we learned it here at the course.
 MudBlazor is a Blazor UI Framework that seems to be a very helpful tool since it grants a lot of components.
 
