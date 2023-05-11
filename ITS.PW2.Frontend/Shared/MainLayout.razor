@@ -6,24 +6,24 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="0">
+    <MudAppBar Elevation="0" Dense>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Href="/" />
         <MudSpacer />
         @if (!_context.HttpContext!.User.Identity!.IsAuthenticated)
         {
-            <MudNavLink Style="margin-left:75vw" Href="Authentication/Login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.SupervisedUserCircle" IconColor="Color.Inherit">Login</MudNavLink>
+            <MudNavLink Style="width:fit-content"  Href="Authentication/Login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.SupervisedUserCircle" IconColor="Color.Inherit">Login</MudNavLink>
         }
         else
         {
-            <MudText Style="margin-left:73vw">@_context.HttpContext.User.Identity.Name</MudText>
-            <MudNavLink Href="Authentication/Logout" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Inherit"></MudNavLink>
+            <MudText>@_context.HttpContext.User.Identity.Name</MudText>
+            <MudNavLink Style="width:fit-content" Href="Authentication/Logout" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Inherit"></MudNavLink>
         }
 
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always" Breakpoint="Breakpoint.Xxl">
         <MudDrawerHeader>
-            <MudText Typo="Typo.h6">ITS.PW2.Frontend</MudText>
+            <MudText Typo="Typo.h6">Earth4Sport</MudText>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>
