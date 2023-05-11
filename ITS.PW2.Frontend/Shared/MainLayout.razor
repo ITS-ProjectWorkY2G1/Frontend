@@ -16,8 +16,19 @@
         }
         else
         {
-            <MudText>@_context.HttpContext.User.Identity.Name</MudText>
-            <MudNavLink Style="width:fit-content" Href="Authentication/Logout" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Inherit"></MudNavLink>
+            <MudList Clickable="true">
+                <MudListItem Text="@_context.HttpContext.User.Identity.Name">
+                    <NestedList>
+                        <MudListItem Icon="@Icons.Material.Filled.Settings">
+                            Settings
+                        </MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Logout">
+                            Logout
+                        </MudListItem>
+                    </NestedList>
+                </MudListItem>
+            </MudList>
+            @*<MudNavLink Style="width:fit-content" Href="Authentication/Logout" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Inherit"></MudNavLink>*@
         }
 
     </MudAppBar>
@@ -36,9 +47,10 @@
 
 @code {
     bool _drawerOpen = true;
-
+    bool _isExpanded = true;
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
+
 }
