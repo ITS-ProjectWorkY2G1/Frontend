@@ -8,5 +8,6 @@
         public int SessionDistance { get; set; }
         public short PoolLaps { get; set; }
         public short PoolLength { get; set; }
+        public bool ShowDetails { get; set; }
     }
 }

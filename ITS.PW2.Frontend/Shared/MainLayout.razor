@@ -1,24 +1,26 @@
 ﻿@inject IHttpContextAccessor _context
 @inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="colorTheme"/>
 <MudDialogProvider />
 <MudSnackbarProvider />
 
+
 <MudLayout>
-    <MudAppBar Elevation="0" Dense>
+    <MudAppBar Style="height:4vw; justify-content:center" Color="Color.Primary" Elevation="0" Dense>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Href="/" />
+        <MudText>Earth4Sport</MudText>
         <MudSpacer/>
         @if (!_context.HttpContext!.User.Identity!.IsAuthenticated)
         {
-            <MudNavLink Style="width:fit-content"  Href="Authentication/Login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.SupervisedUserCircle" IconColor="Color.Inherit">Login</MudNavLink>
+            <MudNavLink Style="width:fit-content"  Href="Authentication/Login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Person" IconColor="Color.Inherit">Login</MudNavLink>
         }
         else
         {
             <MudMenu FullWidth="true">
                 <ActivatorContent>
-                    <MudChip Icon="@Icons.Material.Filled.Person" Style="@($"color:{Colors.Shades.White}")">@_context.HttpContext.User.Identity.Name</MudChip>
+                    <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Warning" >@_context.HttpContext.User.Identity.Name</MudChip>
                 </ActivatorContent>
                 <ChildContent>
                     <MudNavLink Href="/profile">Profile</MudNavLink>
@@ -29,9 +31,6 @@
 
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always" Breakpoint="Breakpoint.Xxl">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Earth4Sport</MudText>
-        </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
@@ -49,4 +48,15 @@
         _drawerOpen = !_drawerOpen;
     }
 
+    private MudTheme colorTheme = new()
+        {
+            Palette = new Palette
+            {
+                Dark = "#1A265A",
+                Error = "#F1600D",
+                Primary = "#50A5B1",
+                Secondary = "#FEF6ED"
+
+            }
+        };
 }
