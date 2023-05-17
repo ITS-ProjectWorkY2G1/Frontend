@@ -1,0 +1,156 @@
+﻿@inject IHttpContextAccessor _context
+@page "/"
+@using Microsoft.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+@using System.Net.Http.Headers;
+@inject IHttpContextAccessor _context
+@inject HttpClient Http
+@inject IHttpClientFactory _fact
+@inject IConfiguration _conf
+@using System.Net.Http.Json
+@using static MudBlazor.CategoryTypes;
+@inject HttpClient httpClient
+
+<PageTitle>Earth4Sport</PageTitle>
+
+@if (_context.HttpContext!.User.Identity!.IsAuthenticated)
+{
+
+    <MudTable CustomHeader="true" Items="SessionList" Hover Striped Bordered="true" FixedHeader Dense>
+            <HeaderContent>
+                <MudTh>Session Number</MudTh>
+                <MudTh>Session Time</MudTh>
+                <MudTh>Session Distance</MudTh>
+                <MudTh>Average Heart Rate</MudTh>
+                <MudTh>Pool Laps</MudTh>
+                <MudTh>Pool Length</MudTh>
+                <MudTh>Details</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.SessionId</MudTd>
+                <MudTd>@context.SessionTime</MudTd>
+                <MudTd>@context.SessionDistance</MudTd>
+                <MudTd>@context.AvgHeartRate</MudTd>
+                <MudTd>@context.PoolLaps</MudTd>
+                <MudTd>@context.PoolLength</MudTd>
+                <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ShowBtnPress(context.SessionId))">@((context.ShowDetails == true) ? "Hide" : "Show") Session Details</MudButton></MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No matching records found</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+            <ChildRowContent> 
+                @if (context.ShowDetails)
+                {
+                    <MudTr>
+                        <td colspan="4">
+                            <MudCard Elevation="0">
+                                <MudCardContent Class="pa-0">
+                                <MudTable Height="60vh" Style="width:inherit" @ref="table" ServerData="@(new Func<TableState, Task<TableData<Smartwatch>>>(ServerReload))" Context="smartcontext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
+                                        <HeaderContent>
+                                            <MudTh>Id</MudTh>
+                                            <MudTh>Position</MudTh>
+                                            <MudTh>Timestamp</MudTh>
+                                            <MudTh>HeartRate</MudTh>
+                                            <MudTh>SessionId</MudTh>
+                                            <MudTh>UserId</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd>@smartcontext.Id</MudTd>
+                                            <MudTd>@smartcontext.Position</MudTd>
+                                            <MudTd>@smartcontext.Timestamp</MudTd>
+                                            <MudTd>@smartcontext.HeartRate</MudTd>
+                                            <MudTd>@smartcontext.SessionId</MudTd>
+                                            <MudTd>@smartcontext.UserId</MudTd>
+                                        </RowTemplate>
+                                        <NoRecordsContent>
+                                            <MudText>No matching records found</MudText>
+                                        </NoRecordsContent>
+                                        <LoadingContent>
+                                            <MudText>Loading...</MudText>
+                                        </LoadingContent>
+                                        <PagerContent>
+                                            <MudTablePager />
+                                        </PagerContent>
+                                    </MudTable>
+                                </MudCardContent>
+                            </MudCard>
+                        </td>
+                    </MudTr>
+                }
+            </ChildRowContent>  
+            <ToolBarContent>
+            <MudDateRangePicker DateRangeChanged="@(s=>OnDatePick(s))" @ref="_picker" Label="Session Date" MaxDate="DateTime.UtcNow" AutoClose="@_autoClose">
+                <PickerActions>
+                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
+                    <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
+                    <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
+                </PickerActions>
+                </MudDateRangePicker>
+            </ToolBarContent>
+        </MudTable>
+}
+else
+{
+    <MudAlert>User not logged in</MudAlert>
+}
+
+@code{
+    private List<SessionModel>? SessionList = new List<SessionModel>();
+    private List<Smartwatch>? SmartwatchesList = new List<Smartwatch>();
+    private MudTable<Smartwatch>? table = new MudTable<Smartwatch>();
+    private bool _readOnly;
+    private bool _isCellEditMode;
+    private bool _editTriggerRowClick;
+    private string error = "";
+    private string value1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
+
+            if (true)
+            {
+                Http = _fact.CreateClient(_conf["ApiLink"]);
+            }
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            SessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/api/Smartwatch/GetAllSessions");
+            SmartwatchesList = await Http.GetFromJsonAsync<List<Smartwatch>>($"{_conf["ApiLink"]}/api/Smartwatch/GetAllSmartwatches");
+        }
+        catch (Exception e)
+        {
+            error = e.Message;
+        }
+    }
+
+    private void ShowBtnPress(Guid sessionId)
+    {
+        SessionModel session = SessionList.First(x => x.SessionId == sessionId);
+        session.ShowDetails = !session.ShowDetails; 
+    }
+
+    private MudDateRangePicker? _picker;
+    private DateRange _dateRange = new DateRange(DateTime.Now.Date, DateTime.Now.AddDays(5).Date);
+    private bool _autoClose;
+    private DateRange searchDate = null;
+
+    private async Task<TableData<Smartwatch>> ServerReload(TableState state)
+    {
+        return new TableData<Smartwatch>() { Items = SmartwatchesList };
+    }
+
+    private async Task OnDatePick(DateRange range)
+    {
+        _dateRange = range;
+        await table.ReloadServerData();
+    }
+}

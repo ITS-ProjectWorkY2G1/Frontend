@@ -18,7 +18,7 @@
         }
         else
         {
-            <MudMenu FullWidth="true">
+            <MudMenu AnchorOrigin="Origin.BottomLeft" FullWidth="true">
                 <ActivatorContent>
                     <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Warning" >@_context.HttpContext.User.Identity.Name</MudChip>
                 </ActivatorContent>
@@ -34,7 +34,7 @@
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+        <MudContainer Class="pt-16" Style="padding-left:1px; padding-right:1px; max-width:90%; border:thin;">
             @Body
         </MudContainer>
     </MudMainContent>
