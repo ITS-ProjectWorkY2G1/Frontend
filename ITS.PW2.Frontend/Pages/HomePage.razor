@@ -13,88 +13,40 @@
 @inject HttpClient httpClient
 
 <PageTitle>Earth4Sport</PageTitle>
-
 @if (_context.HttpContext!.User.Identity!.IsAuthenticated)
 {
+    <MudCard Class="d-flex">
+    <MudContainer>
+            <MudCardContent>
+                <MudText Class="mt-1" Typo="Typo.h5">Welcome!</MudText>
+                <MudText Class="mt-1" Typo="Typo.body1">@_context.HttpContext.User.Identity.Name</MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+            </MudCardActions>
+    </MudContainer>
+        <MudContainer>
+            <MudCardMedia Height="600" Image="Images/watches.jpg" />
+        </MudContainer>
+</MudCard>
 
-    <MudTable CustomHeader="true" Items="SessionList" Hover Striped Bordered="true" FixedHeader Dense>
-            <HeaderContent>
-                <MudTh>Session Number</MudTh>
-                <MudTh>Session Time</MudTh>
-                <MudTh>Session Distance</MudTh>
-                <MudTh>Average Heart Rate</MudTh>
-                <MudTh>Pool Laps</MudTh>
-                <MudTh>Pool Length</MudTh>
-                <MudTh>Details</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd>@context.SessionId</MudTd>
-                <MudTd>@context.SessionTime</MudTd>
-                <MudTd>@context.SessionDistance</MudTd>
-                <MudTd>@context.AvgHeartRate</MudTd>
-                <MudTd>@context.PoolLaps</MudTd>
-                <MudTd>@context.PoolLength</MudTd>
-                <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ShowBtnPress(context.SessionId))">@((context.ShowDetails == true) ? "Hide" : "Show") Session Details</MudButton></MudTd>
-            </RowTemplate>
-            <NoRecordsContent>
-                <MudText>No matching records found</MudText>
-            </NoRecordsContent>
-            <LoadingContent>
-                <MudText>Loading...</MudText>
-            </LoadingContent>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-            <ChildRowContent> 
-                @if (context.ShowDetails)
-                {
-                    <MudTr>
-                        <td colspan="4">
-                            <MudCard Elevation="0">
-                                <MudCardContent Class="pa-0">
-                                <MudTable Height="60vh" Style="width:inherit" @ref="table" ServerData="@(new Func<TableState, Task<TableData<Smartwatch>>>(ServerReload))" Context="smartcontext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
-                                        <HeaderContent>
-                                            <MudTh>Id</MudTh>
-                                            <MudTh>Position</MudTh>
-                                            <MudTh>Timestamp</MudTh>
-                                            <MudTh>HeartRate</MudTh>
-                                            <MudTh>SessionId</MudTh>
-                                            <MudTh>UserId</MudTh>
-                                        </HeaderContent>
-                                        <RowTemplate>
-                                            <MudTd>@smartcontext.Id</MudTd>
-                                            <MudTd>@smartcontext.Position</MudTd>
-                                            <MudTd>@smartcontext.Timestamp</MudTd>
-                                            <MudTd>@smartcontext.HeartRate</MudTd>
-                                            <MudTd>@smartcontext.SessionId</MudTd>
-                                            <MudTd>@smartcontext.UserId</MudTd>
-                                        </RowTemplate>
-                                        <NoRecordsContent>
-                                            <MudText>No matching records found</MudText>
-                                        </NoRecordsContent>
-                                        <LoadingContent>
-                                            <MudText>Loading...</MudText>
-                                        </LoadingContent>
-                                        <PagerContent>
-                                            <MudTablePager />
-                                        </PagerContent>
-                                    </MudTable>
-                                </MudCardContent>
-                            </MudCard>
-                        </td>
-                    </MudTr>
-                }
-            </ChildRowContent>  
-            <ToolBarContent>
-            <MudDateRangePicker DateRangeChanged="@(s=>OnDatePick(s))" @ref="_picker" Label="Session Date" MaxDate="DateTime.UtcNow" AutoClose="@_autoClose">
-                <PickerActions>
-                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
-                    <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
-                    <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
-                </PickerActions>
-                </MudDateRangePicker>
-            </ToolBarContent>
-        </MudTable>
+<MudCarousel Class="mud-width-full; mt-4" Style="height:200px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
+    <MudCarouselItem Transition="transition" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition" Color="@Color.Dark">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition" Color="Color.Dark">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+</MudCarousel>
 }
 else
 {
@@ -110,6 +62,11 @@ else
     private bool _editTriggerRowClick;
     private string error = "";
     private string value1;
+    private bool arrows = true;
+    private bool bullets = true;
+    private bool enableSwipeGesture = true;
+    private bool autocycle = true;
+    private Transition transition = Transition.Slide;
 
     protected override async Task OnInitializedAsync()
     {
@@ -138,19 +95,4 @@ else
         session.ShowDetails = !session.ShowDetails; 
     }
 
-    private MudDateRangePicker? _picker;
-    private DateRange _dateRange = new DateRange(DateTime.Now.Date, DateTime.Now.AddDays(5).Date);
-    private bool _autoClose;
-    private DateRange searchDate = null;
-
-    private async Task<TableData<Smartwatch>> ServerReload(TableState state)
-    {
-        return new TableData<Smartwatch>() { Items = SmartwatchesList };
-    }
-
-    private async Task OnDatePick(DateRange range)
-    {
-        _dateRange = range;
-        await table.ReloadServerData();
-    }
 }
