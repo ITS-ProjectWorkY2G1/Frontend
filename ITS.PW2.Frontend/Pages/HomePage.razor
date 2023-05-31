@@ -11,12 +11,13 @@
 @using System.Net.Http.Json
 @using static MudBlazor.CategoryTypes;
 @inject HttpClient httpClient
+@inject NavigationManager navigation;
 
 <PageTitle>Earth4Sport</PageTitle>
 @if (_context.HttpContext!.User.Identity!.IsAuthenticated)
 {
-    <MudCard Class="d-flex">
-    <MudContainer>
+    <MudCard Style="@($"background:{Colors.Grey.Lighten5}")" Class="d-flex">
+    <MudContainer >
             <MudCardContent>
                 <MudText Class="mt-1" Typo="Typo.h5">Welcome!</MudText>
                 <MudText Class="mt-1" Typo="Typo.body1">@_context.HttpContext.User.Identity.Name</MudText>
@@ -26,13 +27,13 @@
                 <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
             </MudCardActions>
     </MudContainer>
-        <MudContainer>
-            <MudCardMedia Height="600" Image="Images/watches.jpg" />
-        </MudContainer>
+    <MudContainer>
+        <MudCardMedia Height="600" Image="Images/watches.jpg" />
+    </MudContainer>
 </MudCard>
 
 <MudCarousel Class="mud-width-full; mt-4" Style="height:200px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
-    <MudCarouselItem Transition="transition" Color="@Color.Primary">
+    <MudCarouselItem Transition="transition" Color="@Color.Dark">
         <div class="d-flex" style="height:100%">
         </div>
     </MudCarouselItem>
@@ -42,8 +43,8 @@
         </div>
     </MudCarouselItem>
     <MudCarouselItem Transition="transition" Color="Color.Dark">
-        <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
+            <div class="d-flex" style="height:100%">
+                <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
         </div>
     </MudCarouselItem>
 </MudCarousel>
@@ -93,6 +94,12 @@ else
     {
         SessionModel session = SessionList.First(x => x.SessionId == sessionId);
         session.ShowDetails = !session.ShowDetails; 
+    }
+
+    private void NavigateToStats()
+    {
+        navigation.NavigateTo("/UserStats");
+
     }
 
 }

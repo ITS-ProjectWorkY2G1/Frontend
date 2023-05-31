@@ -10,7 +10,7 @@
     <MudAppBar Style="height:4vw; justify-content:center" Color="Color.Primary" Elevation="0" Dense>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Href="/" />
-        <MudText>Earth4Sport</MudText>
+        <MudText Class="ml-4" Typo="Typo.h5">Earth4Sport</MudText>
         <MudSpacer/>
         @if (!_context.HttpContext!.User.Identity!.IsAuthenticated)
         {
@@ -55,7 +55,7 @@
                 Dark = "#1A265A",
                 Error = "#F1600D",
                 Primary = "#50A5B1",
-                Secondary = "#FEF6ED"
+                Secondary = "#FAFAFA",
             }
         };
 }

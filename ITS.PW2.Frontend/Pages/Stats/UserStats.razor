@@ -53,20 +53,16 @@ else
                             <MudCardContent Class="pa-0">
                                 <MudTable Height="60vh" Style="width:140vh" @ref="table" ServerData="@(new Func<TableState, Task<TableData<Smartwatch>>>(ServerReload))" Context="smartcontext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
                                     <HeaderContent>
-                                        <MudTh>Id</MudTh>
+                                        <MudTh>UserId</MudTh>
                                         <MudTh>Position</MudTh>
                                         <MudTh>Timestamp</MudTh>
                                         <MudTh>HeartRate</MudTh>
-                                        <MudTh>SessionId</MudTh>
-                                        <MudTh>UserId</MudTh>
                                     </HeaderContent>
                                     <RowTemplate>
-                                        <MudTd>@smartcontext.Id</MudTd>
+                                        <MudTd>@smartcontext.UserId</MudTd>
                                         <MudTd>@smartcontext.Position</MudTd>
                                         <MudTd>@smartcontext.Timestamp</MudTd>
                                         <MudTd>@smartcontext.HeartRate</MudTd>
-                                        <MudTd>@smartcontext.SessionId</MudTd>
-                                        <MudTd>@smartcontext.UserId</MudTd>
                                     </RowTemplate>
                                     <NoRecordsContent>
                                         <MudText>No matching records found</MudText>
@@ -85,13 +81,13 @@ else
             }
         </ChildRowContent>
         <ToolBarContent>
-            <MudDateRangePicker Placeholder="@DateTime.UtcNow.ToString()" DateRangeChanged="@(s => {_dateRange = s ; OnDatePick(s); })" @ref="_picker" Label="Session Date" MaxDate="DateTime.UtcNow" AutoClose="@_autoClose">
+            <MudDatePicker @ref="_picker" Label="Session Date" DateChanged="@(s => {_date = s ; OnDatePick(s); })" AutoClose="@autoClose">
                 <PickerActions>
-                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => {_picker.Clear();})">Clear</MudButton>
+                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
                     <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
                     <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
                 </PickerActions>
-            </MudDateRangePicker>
+            </MudDatePicker>
         </ToolBarContent>
     </MudTable>
 }
@@ -127,10 +123,10 @@ else
         }
     }
 
-    private MudDateRangePicker? _picker;
-    private DateRange _dateRange = new DateRange(DateTime.Now.Date, DateTime.Now.AddDays(5).Date);
+    private MudDatePicker? _picker;
+    DateTime? _date = DateTime.Today;
     private bool _autoClose;
-    private DateRange searchDate = null;
+    private bool autoClose;
 
     private void ShowBtnPress(Guid sessionId)
     {
@@ -145,7 +141,11 @@ else
         List<Smartwatch> finalFilteredList = new List<Smartwatch>();
         foreach (Smartwatch sm in filteredList)
         {
-            if (sm.Timestamp > _dateRange.Start && sm.Timestamp < _dateRange.End)
+            if (sm.Timestamp.Date == _date.Value)
+            {
+                finalFilteredList.Add(sm);
+            }
+            if(_date.Value == DateTime.UtcNow.Date)
             {
                 finalFilteredList.Add(sm);
             }
@@ -153,9 +153,9 @@ else
         return new TableData<Smartwatch>() { Items = finalFilteredList };
     }
 
-    private async Task OnDatePick(DateRange range)
+    private async Task OnDatePick(DateTime? date)
     {
-        _dateRange = range;
+        _date = date;
         await table.ReloadServerData();
     }
 }
