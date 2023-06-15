@@ -9,5 +9,6 @@
         public short PoolLaps { get; set; }
         public short PoolLength { get; set; }
         public bool ShowDetails { get; set; }
+        public List<Smartwatch>? smartwatches { get; set; }
     }
 }

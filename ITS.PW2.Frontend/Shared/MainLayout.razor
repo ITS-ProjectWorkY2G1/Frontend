@@ -34,12 +34,17 @@
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer Class="pt-16" Style="padding-left:1px; padding-right:1px; max-width:90%; border:thin;">
+        <MudContainer Class="pt-16">
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
+<style>
+    .mud-container-maxwidth-lg{
+        max-width:inherit;
+    }
+</style>
 @code {
     bool _drawerOpen = true;
     bool _isExpanded = true;

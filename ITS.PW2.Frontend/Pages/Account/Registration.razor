@@ -1,24 +1,27 @@
 ﻿@page "/Register"
 @using System.Text.RegularExpressions;
 @using System.ComponentModel.DataAnnotations;
+@using System.Xml;
 @using testBlazorServer.Pages;
 @using Microsoft.AspNetCore.Authentication;
 @using Microsoft.AspNetCore.Authentication.Cookies;
 @using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 @using System.Net.Http.Headers;
-@inject IHttpContextAccessor _context
-@inject HttpClient Http
+@inject IHttpContextAccessor _context;
+@inject NavigationManager navigation;
+@inject HttpClient Http;
 @inject IHttpClientFactory _fact
 @inject IConfiguration _conf
+@inject ISnackbar snack
 
 <MudGrid>
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" @onsubmit="CreateUser">
-                <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" />
-                <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"
+            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                <MudTextField @bind-Value="Username" T="string" Label="Username" Required="true" RequiredError="User name is required!" />
+                <MudTextField @bind-Value="Email" T="string" Label="Email" Required="true" RequiredError="Email is required!"
                               Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" />
-                <MudTextField T="string" Label="Password" HelperText="Choose a strong password" @ref="pwField1"
+                <MudTextField @bind-Value="Password" T="string" Label="Password" HelperText="Choose a strong password" @ref="pwField1"
                               InputType="InputType.Password"
                               Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
                               RequiredError="Password is required!" />
@@ -26,8 +29,9 @@
                               Label="Password" HelperText="Repeat the password" InputType="InputType.Password"
                               Validation="@(new Func<string, string>(PasswordMatch))" />
                 <div class="d-flex align-center justify-space-between">
+                    <MudText>Did you read and agree with our privacy policy?</MudText>
                     <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Label="I agree!" />
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Register</MudButton>
+                    <MudButton Href="Authentication/Login" OnClick="CreateUser" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Register</MudButton>
                 </div>
             </MudForm>
         </MudPaper>
@@ -37,26 +41,30 @@
 @code{
     bool success;
     string[] errors = { };
-    MudTextField<string> pwField1;
-    MudForm form;
+    MudTextField<string>? pwField1;
+    MudForm? form;
     private string error = "";
-    
+    public string? Username;
+    public string? Password;
+    public string? Email;
+
     public async Task CreateUser()
     {
         try
         {
             var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
-
+            var postBody = new UserModel() { Username = Username, Password = Password, Email = Email };
             if (true)
             {
                 Http = _fact.CreateClient(_conf["ApiLink"]);
             }
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            await Http.PostAsync($"{_conf["ApiLink"]}/api/Smartwatch/GetAllSessions", );
+            var response = await Http.PostAsJsonAsync($"{_conf["ApiLink"]}/api/Account/Register", postBody);
         }
         catch (Exception e)
         {
+            Console.WriteLine("pippo");
             error = e.Message;
         }
     }

@@ -16,85 +16,92 @@
 }
 else
 {
-    <MudTable CustomHeader="true" Items="SessionList" Hover Striped Bordered="true" FixedHeader Dense>
-        <HeaderContent>
-            <MudTh>Session Number</MudTh>
-            <MudTh>Session Time</MudTh>
-            <MudTh>Session Distance</MudTh>
-            <MudTh>Average Heart Rate</MudTh>
-            <MudTh>Pool Laps</MudTh>
-            <MudTh>Pool Length</MudTh>
-            <MudTh>Details</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd>@context.SessionId</MudTd>
-            <MudTd>@context.SessionTime</MudTd>
-            <MudTd>@context.SessionDistance</MudTd>
-            <MudTd>@context.AvgHeartRate</MudTd>
-            <MudTd>@context.PoolLaps</MudTd>
-            <MudTd>@context.PoolLength</MudTd>
-            <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ShowBtnPress(context.SessionId))">@((context.ShowDetails == true) ? "Hide" : "Show") Session Details</MudButton></MudTd>
-        </RowTemplate>
-        <NoRecordsContent>
-            <MudText>No matching records found</MudText>
-        </NoRecordsContent>
-        <LoadingContent>
-            <MudText>Loading...</MudText>
-        </LoadingContent>
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-        <ChildRowContent>
-            @if (context.ShowDetails)
-            {
-                <MudTr>
-                    <td colspan="4">
-                        <MudCard Elevation="0">
-                            <MudCardContent Class="pa-0">
-                                <MudTable Height="60vh" Style="width:140vh" @ref="table" ServerData="@(new Func<TableState, Task<TableData<Smartwatch>>>(ServerReload))" Context="smartcontext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
-                                    <HeaderContent>
-                                        <MudTh>UserId</MudTh>
-                                        <MudTh>Position</MudTh>
-                                        <MudTh>Timestamp</MudTh>
-                                        <MudTh>HeartRate</MudTh>
-                                    </HeaderContent>
-                                    <RowTemplate>
-                                        <MudTd>@smartcontext.UserId</MudTd>
-                                        <MudTd>@smartcontext.Position</MudTd>
-                                        <MudTd>@smartcontext.Timestamp</MudTd>
-                                        <MudTd>@smartcontext.HeartRate</MudTd>
-                                    </RowTemplate>
-                                    <NoRecordsContent>
-                                        <MudText>No matching records found</MudText>
-                                    </NoRecordsContent>
-                                    <LoadingContent>
-                                        <MudText>Loading...</MudText>
-                                    </LoadingContent>
-                                    <PagerContent>
-                                        <MudTablePager />
-                                    </PagerContent>
-                                </MudTable>
-                            </MudCardContent>
-                        </MudCard>
-                    </td>
-                </MudTr>
-            }
-        </ChildRowContent>
-        <ToolBarContent>
-            <MudDatePicker @ref="_picker" Label="Session Date" DateChanged="@(s => {_date = s ; OnDatePick(s); })" AutoClose="@autoClose">
-                <PickerActions>
-                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
-                    <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
-                    <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
-                </PickerActions>
-            </MudDatePicker>
-        </ToolBarContent>
-    </MudTable>
+    <MudContainer Class="d-flex flex-grow-1 gap-5" Style="margin-top:5vh">
+        <MudItem xs="6" Class="d-flex mx-auto">
+            <MudTable CustomHeader="true" Items="FullSessionList" Hover Striped Bordered="true" FixedHeader FixedFooter Style="height:auto; width:80vh;" Dense>
+                <HeaderContent>
+                    <MudTh>Session Number</MudTh>
+                    <MudTh>Session Time</MudTh>
+                    <MudTh>Session Distance</MudTh>
+                    <MudTh>Average Heart Rate</MudTh>
+                    <MudTh>Pool Laps</MudTh>
+                    <MudTh>Pool Length</MudTh>
+                    <MudTh>Details</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.SessionId</MudTd>
+                    <MudTd>@context.SessionTime</MudTd>
+                    <MudTd>@context.SessionDistance</MudTd>
+                    <MudTd>@context.AvgHeartRate</MudTd>
+                    <MudTd>@context.PoolLaps</MudTd>
+                    <MudTd>@context.PoolLength</MudTd>
+                    <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ShowBtnPress(context.SessionId))">@((context.ShowDetails == true) ? "Hide" : "Show") Session Details</MudButton></MudTd>
+                </RowTemplate>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+                <ChildRowContent>
+                    @if (context.ShowDetails)
+                    {
+                        <MudTr>
+                            <td colspan="6">
+                                <MudCard Elevation="0">
+                                    <MudCardContent Class="pa-0">
+                                        <MudTable @ref="table" Items="context.smartwatches" Context="smart" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0" FixedHeader="true" Height="400px" >
+                                            @*ServerData="@(new Func<TableState, Task<TableData<Smartwatch>>>(ServerReload))"*@
+                                            <HeaderContent>
+                                                <MudTh>Position</MudTh>
+                                                <MudTh >Timestamp</MudTh>
+                                                <MudTh>HeartRate</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd>@smart.Position</MudTd>
+                                                <MudTd>@smart.Timestamp</MudTd>
+                                                <MudTd>@smart.HeartRate</MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </MudCardContent>
+                                </MudCard>
+                            </td>
+                        </MudTr>
+                    }
+                </ChildRowContent>
+                <ToolBarContent>
+                    <MudDatePicker @ref="_picker" Label="Session Date" DateChanged="@(s => {_date = s ; OnDatePick(s); })" AutoClose="@autoClose">
+                        <PickerActions>
+                            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
+                            <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
+                            <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
+                        </PickerActions>
+                    </MudDatePicker>
+                </ToolBarContent>
+            </MudTable>
+        </MudItem>
+        <MudItem xs="6" Class="d-flex" Style="padding:2vh">
+            <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350" ChartOptions="options"></MudChart>
+        </MudItem>
+    </MudContainer>
 }
 
+<style>
+    .mud-container {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        margin-left: 2vw;
+        margin-right: 0;
+    }
+</style>
+
+
 @code {
-    private List<SessionModel>? SessionList = new List<SessionModel>();
-    private List<Smartwatch>? SmartwatchesList = new List<Smartwatch>();
+    private List<SessionModel>? FullSessionList = new List<SessionModel>();
     private MudTable<Smartwatch>? table = new MudTable<Smartwatch>();
     private bool _readOnly;
     private bool _isCellEditMode;
@@ -104,18 +111,19 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        options.InterpolationOption = InterpolationOption.NaturalSpline;
         try
         {
             var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
-
+            var id =  _context.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "Id")!.Value;
+            
             if (true)
             {
                 Http = _fact.CreateClient(_conf["ApiLink"]);
             }
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            SessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/api/Smartwatch/GetAllSessions");
-            SmartwatchesList = await Http.GetFromJsonAsync<List<Smartwatch>>($"{_conf["ApiLink"]}/api/Smartwatch/GetAllSmartwatches");
+            FullSessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/api/Smartwatch/GetFullSessionsList?userId={id}");
         }
         catch (Exception e)
         {
@@ -130,32 +138,76 @@ else
 
     private void ShowBtnPress(Guid sessionId)
     {
-        SessionModel session = SessionList.First(x => x.SessionId == sessionId);
+        SessionModel session = FullSessionList.First(x => x.SessionId == sessionId);
         session.ShowDetails = !session.ShowDetails;
     }
 
 
-    private async Task<TableData<Smartwatch>> ServerReload(TableState state)
-    {
-        List<Smartwatch> filteredList = SmartwatchesList;
-        List<Smartwatch> finalFilteredList = new List<Smartwatch>();
-        foreach (Smartwatch sm in filteredList)
-        {
-            if (sm.Timestamp.Date == _date.Value)
-            {
-                finalFilteredList.Add(sm);
-            }
-            if(_date.Value == DateTime.UtcNow.Date)
-            {
-                finalFilteredList.Add(sm);
-            }
-        }
-        return new TableData<Smartwatch>() { Items = finalFilteredList };
-    }
+    //private async Task<TableData<Smartwatch>> ServerReload(TableState state)
+    //{
+    //    List<Smartwatch> filteredList = SmartwatchesList;
+    //    List<Smartwatch> finalFilteredList = new List<Smartwatch>();
+    //    foreach (Smartwatch sm in filteredList)
+    //    {
+    //        if (sm.Timestamp.Date == _date.Value)
+    //        {
+    //            finalFilteredList.Add(sm);
+    //        }
+    //        if(_date.Value == DateTime.UtcNow.Date)
+    //        {
+    //            finalFilteredList.Add(sm);
+    //        }
+    //    }
+    //    return new TableData<Smartwatch>() { Items = finalFilteredList };
+    //}
 
     private async Task OnDatePick(DateTime? date)
     {
         _date = date;
         await table.ReloadServerData();
     }
+
+    private ChartOptions options = new ChartOptions();
+    public List<ChartSeries> Series = new List<ChartSeries>()
+    {
+        new ChartSeries() { Name = "Series 1", Data = new double[] { 90, 79, 72, 69, 62, 62, 55, 65, 70 } },
+        new ChartSeries() { Name = "Series 2", Data = new double[] { 35, 41, 35, 51, 49, 62, 69, 91, 148 } },
+        new ChartSeries() { Name = "Series 3", Data = new double[] { 89, 78, 71, 68, 61, 60, 54, 64, 69 } },
+        new ChartSeries() { Name = "Series 4", Data = new double[] { 35, 41, 35, 51, 49, 62, 69, 91, 148 } },
+        new ChartSeries() { Name = "Series 5", Data = new double[] { 35, 41, 35, 51, 49, 62, 69, 91, 148 } }
+    };
+    public string[] XAxisLabels = { "data" };
+
+    Random random = new Random();
+
+    public void RandomizeData()
+    {
+        var new_series = new List<ChartSeries>()
+        {
+            new ChartSeries() { Name = "Series 1", Data = new double[9] },
+            new ChartSeries() { Name = "Series 2", Data = new double[9] },
+            new ChartSeries() { Name = "Series 3", Data = new double[9] },
+            new ChartSeries() { Name = "Series 4", Data = new double[9]},
+            new ChartSeries() { Name = "Series 5", Data = new double[9]}
+        };
+        for (int i = 0; i < 9; i++)
+        {
+            new_series[0].Data[i] = random.NextDouble() * 100;
+            new_series[1].Data[i] = random.NextDouble() * 100;
+            new_series[2].Data[i] = random.NextDouble() * 100;
+            new_series[3].Data[i] = random.NextDouble() * 100;
+            new_series[4].Data[i] = random.NextDouble() * 100;
+
+        }
+        Series = new_series;
+        StateHasChanged();
+    }
+
+    void OnClickMenu(InterpolationOption interpolationOption)
+    {
+        options.InterpolationOption = interpolationOption;
+        StateHasChanged();
+    }
+
+
 }
