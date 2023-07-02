@@ -1,5 +1,4 @@
-﻿@inject IHttpContextAccessor _context
-@page "/"
+﻿@page "/"
 @using Microsoft.AspNetCore.Authentication;
 @using Microsoft.AspNetCore.Authentication.Cookies;
 @using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -31,23 +30,6 @@
         <MudCardMedia Height="600" Image="Images/watches.jpg" />
     </MudContainer>
 </MudCard>
-
-<MudCarousel Class="mud-width-full; mt-4" Style="height:200px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
-    <MudCarouselItem Transition="transition" Color="@Color.Dark">
-        <div class="d-flex" style="height:100%">
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="transition" Color="@Color.Dark">
-        <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="transition" Color="Color.Dark">
-            <div class="d-flex" style="height:100%">
-                <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
-        </div>
-    </MudCarouselItem>
-</MudCarousel>
 }
 else
 {

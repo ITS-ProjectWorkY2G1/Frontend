@@ -1,0 +1,57 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+@using System.Net.Http.Headers;
+@inject IHttpContextAccessor _context
+@inject HttpClient Http
+@inject IHttpClientFactory _fact
+@inject IConfiguration _conf
+@using System.Net.Http.Json
+@using static MudBlazor.CategoryTypes;
+@inject HttpClient httpClient
+@inject NavigationManager navigation;
+
+<MudThemeProvider Theme="colorTheme"/>
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<PageTitle>ITS.PW2.FrontendOnPrem</PageTitle>
+
+<MudLayout>
+    <MudAppBar Style="height:4vw; justify-content:center" Color="Color.Success" Elevation="0" Dense>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Href="/" />
+        <MudText Class="ml-4" Typo="Typo.h5">Earth4Sport</MudText>
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer Class="pt-16">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<style>
+    .mud-container-maxwidth-lg {
+        max-width: inherit;
+    }
+</style>
+@code {
+    bool _drawerOpen = true;
+    bool _isExpanded = true;
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private MudTheme colorTheme = new()
+        {
+            Palette = new Palette
+            {
+                Dark = "#1A265A",
+                Error = "#F1600D",
+                Primary = "#50A5B1",
+                Secondary = "#FAFAFA",
+            }
+        };
+}
