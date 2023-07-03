@@ -1,8 +1,5 @@
 ﻿@inject IHttpContextAccessor _context
 @page "/"
-@using Microsoft.AspNetCore.Authentication;
-@using Microsoft.AspNetCore.Authentication.Cookies;
-@using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 @using System.Net.Http.Headers;
 @inject IHttpContextAccessor _context
 @inject HttpClient Http
@@ -41,6 +38,31 @@
             <PagerContent>
                 <MudTablePager />
             </PagerContent>
+            <ChildRowContent>
+                @if (ShowDetails)
+                {
+                    <MudTr>
+                        <td colspan="6">
+                            <MudCard Elevation="0">
+                                <MudCardContent Class="pa-0">
+                                    <MudTable Items="smartwatches" Context="smart" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0" FixedHeader="true" Height="400px">
+                                        <HeaderContent>
+                                            <MudTh>Timestamp</MudTh>
+                                            <MudTh>Position</MudTh>
+                                            <MudTh>HeartRate</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd>@smart.Timestamp</MudTd>
+                                            <MudTd>@smart.Position</MudTd>
+                                            <MudTd>@smart.HeartRate</MudTd>
+                                        </RowTemplate>
+                                    </MudTable>
+                                </MudCardContent>
+                            </MudCard>
+                        </td>
+                    </MudTr>
+                }
+            </ChildRowContent>
         </MudTable>
     </MudItem>
 </MudContainer>
@@ -54,16 +76,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
         try
         {
             if (true)
             {
                 Http = _fact.CreateClient(_conf["ApiLink"]!);
             }
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            //smartwatchesOnPrems = await _smartwatchServices!.GetSmartwatchesOnPremAsync(); 
+            //smartwatchesOnPrems = await _smartwatchServices!.GetSmartwatchesOnPremAsync();
             smartwatches = await Http.GetFromJsonAsync<List<Smartwatch>>($"{_conf["ApiLink"]}/api/Smartwatch/GetAllSmartwatches");
         }
         catch (Exception e)
@@ -77,4 +97,4 @@
         SmartwatchesOnPrem smart = smartwatchesOnPrems!.First(x => x.Id == smartId);
         ShowDetails = !ShowDetails;
     }
-}                                          
+}                               

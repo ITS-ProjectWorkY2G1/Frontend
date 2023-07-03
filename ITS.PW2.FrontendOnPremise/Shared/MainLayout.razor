@@ -1,0 +1,41 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="colorTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Style="height:4vw; justify-content:center" Color="Color.Primary" Elevation="0" Dense>
+        <MudText Class="ml-4" Typo="Typo.h5">Earth4Sport</MudText>
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer Class="pt-16">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<style>
+    .mud-container-maxwidth-lg {
+        max-width: inherit;
+    }
+</style>
+@code {
+    bool _drawerOpen = true;
+    bool _isExpanded = true;
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private MudTheme colorTheme = new()
+        {
+            Palette = new Palette
+            {
+                Dark = "#1A265A",
+                Error = "#F1600D",
+                Primary = "#50A5B1",
+                Secondary = "#FAFAFA",
+            }
+        };
+}
