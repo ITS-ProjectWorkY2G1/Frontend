@@ -110,11 +110,11 @@ else
     private string error = "";
     private string value1;
 
-    public double[] AvgHR = new double[8];
-    public double[] SessionDistance = new double[8];
-    public double[] PoolLaps = new double[8];
-    public double[] PoolLength = new double[8];
-    public double[] SessionTime = new double[8];
+    public static double[] AvgHR = new double[8];
+    public static double[] SessionDistance = new double[8];
+    public static double[] PoolLaps = new double[8];
+    public static double[] PoolLength = new double[8];
+    public static double[] SessionTime = new double[8];
 
     protected override async Task OnInitializedAsync()
     {
@@ -170,38 +170,13 @@ else
     private ChartOptions options = new ChartOptions();
     public List<ChartSeries> Series = new List<ChartSeries>()
     {
-        new ChartSeries() { Name = "Average HR", Data =  },
-        new ChartSeries() { Name = "Session Distance", Data = new double[] { } },
-        new ChartSeries() { Name = "Pool laps", Data = new double[] {  } },
-        new ChartSeries() { Name = "Pool length", Data = new double[] { } },
-        new ChartSeries() { Name = "Session Time", Data = new double[] { } }
+        new ChartSeries() { Name = "Average HR", Data = AvgHR },
+        new ChartSeries() { Name = "Session Distance", Data = SessionDistance },
+        new ChartSeries() { Name = "Pool laps", Data =  PoolLength },
+        new ChartSeries() { Name = "Pool length", Data = PoolLength },
+        new ChartSeries() { Name = "Session Time", Data = SessionTime}
     };
-    public string[] XAxisLabels = { "data" };
-
-    Random random = new Random();
-
-    public void RandomizeData()
-    {
-        var new_series = new List<ChartSeries>()
-        {
-            new ChartSeries() { Name = "Average HR", Data = new double[9] },
-            new ChartSeries() { Name = "Series 2", Data = new double[9] },
-            new ChartSeries() { Name = "Series 3", Data = new double[9] },
-            new ChartSeries() { Name = "Series 4", Data = new double[9]},
-            new ChartSeries() { Name = "Series 5", Data = new double[9]}
-        };
-        for (int i = 0; i < 9; i++)
-        {
-            new_series[0].Data[i] = random.NextDouble() * 100;
-            new_series[1].Data[i] = random.NextDouble() * 100;
-            new_series[2].Data[i] = random.NextDouble() * 100;
-            new_series[3].Data[i] = random.NextDouble() * 100;
-            new_series[4].Data[i] = random.NextDouble() * 100;
-
-        }
-        Series = new_series;
-        StateHasChanged();
-    }
+    public string[] XAxisLabels = { "Stats" };
 
     void OnClickMenu(InterpolationOption interpolationOption)
     {
