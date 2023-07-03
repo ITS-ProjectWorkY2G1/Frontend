@@ -15,6 +15,7 @@ IdentityModelEventSource.ShowPII = true;
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
+builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
 var _conf = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", optional: false)
