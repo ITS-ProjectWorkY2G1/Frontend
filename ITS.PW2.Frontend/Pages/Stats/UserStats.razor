@@ -135,6 +135,7 @@ else
             int i = 0;
             foreach(var value in FullSessionList!)
             {
+                if (i > 8) break;
                 AvgHR[i] = value.AvgHeartRate;
                 SessionDistance[i] = value.SessionDistance;
                 PoolLaps[i] = value.PoolLaps;
