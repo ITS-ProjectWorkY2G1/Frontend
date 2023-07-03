@@ -84,7 +84,8 @@ else
             </MudTable>
         </MudItem>
         <MudItem xs="6" Class="d-flex" Style="padding:2vh">
-            <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350" ChartOptions="options"></MudChart>
+            <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px">
+            </MudChart>
         </MudItem>
     </MudContainer>
 }
@@ -109,6 +110,12 @@ else
     private string error = "";
     private string value1;
 
+    public double[] AvgHR = new double[8];
+    public double[] SessionDistance = new double[8];
+    public double[] PoolLaps = new double[8];
+    public double[] PoolLength = new double[8];
+    public double[] SessionTime = new double[8];
+
     protected override async Task OnInitializedAsync()
     {
         options.InterpolationOption = InterpolationOption.NaturalSpline;
@@ -116,14 +123,26 @@ else
         {
             var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
             var id =  _context.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "Id")!.Value;
-            
+
             if (true)
             {
                 Http = _fact.CreateClient(_conf["ApiLink"]);
             }
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            FullSessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/api/Smartwatch/GetFullSessionsList?userId={id}");
+            FullSessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/GetFullSessionsList?userId={id}");
+            FullSessionList!.Reverse();
+            int i = 0;
+            foreach(var value in FullSessionList!)
+            {
+                AvgHR[i] = value.AvgHeartRate;
+                SessionDistance[i] = value.SessionDistance;
+                PoolLaps[i] = value.PoolLaps;
+                PoolLength[i] = value.PoolLength;
+                SessionTime[i] = value.SessionTime.TotalMinutes;
+
+                i++;
+            }
         }
         catch (Exception e)
         {
@@ -138,43 +157,24 @@ else
 
     private void ShowBtnPress(Guid sessionId)
     {
-        SessionModel session = FullSessionList.First(x => x.SessionId == sessionId);
+        SessionModel session = FullSessionList!.First(x => x.SessionId == sessionId);
         session.ShowDetails = !session.ShowDetails;
     }
-
-
-    //private async Task<TableData<Smartwatch>> ServerReload(TableState state)
-    //{
-    //    List<Smartwatch> filteredList = SmartwatchesList;
-    //    List<Smartwatch> finalFilteredList = new List<Smartwatch>();
-    //    foreach (Smartwatch sm in filteredList)
-    //    {
-    //        if (sm.Timestamp.Date == _date.Value)
-    //        {
-    //            finalFilteredList.Add(sm);
-    //        }
-    //        if(_date.Value == DateTime.UtcNow.Date)
-    //        {
-    //            finalFilteredList.Add(sm);
-    //        }
-    //    }
-    //    return new TableData<Smartwatch>() { Items = finalFilteredList };
-    //}
 
     private async Task OnDatePick(DateTime? date)
     {
         _date = date;
-        await table.ReloadServerData();
+        await table!.ReloadServerData();
     }
 
     private ChartOptions options = new ChartOptions();
     public List<ChartSeries> Series = new List<ChartSeries>()
     {
-        new ChartSeries() { Name = "Average HR", Data = new double[] { } },
-        new ChartSeries() { Name = "Series 2", Data = new double[] { 35, 41, 35, 51, 49, 62, 69, 91, 148 } },
-        new ChartSeries() { Name = "Series 3", Data = new double[] { 89, 78, 71, 68, 61, 60, 54, 64, 69 } },
-        new ChartSeries() { Name = "Series 4", Data = new double[] { 35, 41, 35, 51, 49, 62, 69, 91, 148 } },
-        new ChartSeries() { Name = "Series 5", Data = new double[] { 35, 41, 35, 51, 49, 62, 69, 91, 148 } }
+        new ChartSeries() { Name = "Average HR", Data =  },
+        new ChartSeries() { Name = "Session Distance", Data = new double[] { } },
+        new ChartSeries() { Name = "Pool laps", Data = new double[] {  } },
+        new ChartSeries() { Name = "Pool length", Data = new double[] { } },
+        new ChartSeries() { Name = "Session Time", Data = new double[] { } }
     };
     public string[] XAxisLabels = { "data" };
 

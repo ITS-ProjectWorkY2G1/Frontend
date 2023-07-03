@@ -63,8 +63,8 @@ else
             }
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            SessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/api/Smartwatch/GetAllSessions");
-            SmartwatchesList = await Http.GetFromJsonAsync<List<Smartwatch>>($"{_conf["ApiLink"]}/api/Smartwatch/GetAllSmartwatches");
+            SessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/GetAllSessions");
+            SmartwatchesList = await Http.GetFromJsonAsync<List<Smartwatch>>($"{_conf["ApiLink"]}/GetAllSmartwatches");
         }
         catch (Exception e)
         {
