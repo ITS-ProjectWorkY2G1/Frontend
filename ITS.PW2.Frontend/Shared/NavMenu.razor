@@ -1,7 +1,7 @@
-﻿@inject IHttpContextAccessor _context
+﻿@inject AuthenticationStateProvider auth;
 <MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    @if (_context.HttpContext!.User.Identity!.IsAuthenticated)
+    @if (auth.GetAuthenticationStateAsync().Result.User.Identity!.IsAuthenticated)
     {
         <MudNavLink Href="UserStats" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.VerifiedUser">User Stats</MudNavLink>
     }

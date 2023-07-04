@@ -3,14 +3,15 @@
 @using Microsoft.AspNetCore.Authentication.Cookies;
 @using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 @using System.Net.Http.Headers;
-@inject IHttpContextAccessor _context
+@inject AuthenticationStateProvider auth;
 @inject HttpClient Http
 @inject IHttpClientFactory _fact
 @inject IConfiguration _conf
+@*@inject IHttpContextAccessor _context*@
 
 <PageTitle>User Stats</PageTitle>
 
-@if (!_context.HttpContext!.User.Identity!.IsAuthenticated)
+@if (!auth.GetAuthenticationStateAsync().Result.User.Identity!.IsAuthenticated)
 {
     <h1>You're not supposed to be here</h1>
 }
@@ -76,8 +77,8 @@ else
                     <MudDatePicker @ref="_picker" Label="Session Date" DateChanged="@(s => {_date = s ; OnDatePick(s); })" AutoClose="@autoClose">
                         <PickerActions>
                             <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
-                            <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
-                            <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
+                            <MudButton OnClick="@(() => _picker!.Close(false))">Cancel</MudButton>
+                            <MudButton Color="Color.Primary" OnClick="@(() => _picker!.Close())">Ok</MudButton>
                         </PickerActions>
                     </MudDatePicker>
                 </ToolBarContent>
@@ -87,6 +88,7 @@ else
             <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px">
             </MudChart>
         </MudItem>
+        @*<MudText>token: @token</MudText>*@
     </MudContainer>
 }
 
@@ -108,7 +110,7 @@ else
     private bool _isCellEditMode;
     private bool _editTriggerRowClick;
     private string error = "";
-    private string value1;
+    //private string? token = "ciao";
 
     public static double[] AvgHR = new double[8];
     public static double[] SessionDistance = new double[8];
@@ -121,14 +123,15 @@ else
         options.InterpolationOption = InterpolationOption.NaturalSpline;
         try
         {
-            var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
-            var id =  _context.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "Id")!.Value;
+            //token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
 
-            if (true)
-            {
-                Http = _fact.CreateClient(_conf["ApiLink"]);
-            }
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var id = auth.GetAuthenticationStateAsync().Result!.User.Claims.FirstOrDefault(x => x.Type == "Id")!.Value;
+
+            //if (true)
+            //{
+            //    Http = _fact.CreateClient(_conf["ApiLink"]);
+            //}
+            //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);         
 
             FullSessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/GetFullSessionsList?userId={id}");
             FullSessionList!.Reverse();

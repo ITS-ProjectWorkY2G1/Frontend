@@ -21,12 +21,6 @@ var _conf = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", optional: false)
         .Build();
 
-/*builder.Services.AddHttpClient("").ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
-{
-    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
-
-});*/
-
 builder.Services.AddAuthentication(o =>
 {
     o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -67,7 +61,7 @@ builder.Services.AddAuthentication(o =>
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddHttpContextAccessor();
+//builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

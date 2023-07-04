@@ -3,7 +3,6 @@
 @using Microsoft.AspNetCore.Authentication.Cookies;
 @using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 @using System.Net.Http.Headers;
-@inject IHttpContextAccessor _context
 @inject HttpClient Http
 @inject IHttpClientFactory _fact
 @inject IConfiguration _conf
@@ -11,15 +10,16 @@
 @using static MudBlazor.CategoryTypes;
 @inject HttpClient httpClient
 @inject NavigationManager navigation;
+@inject AuthenticationStateProvider auth;
 
 <PageTitle>Earth4Sport</PageTitle>
-@if (_context.HttpContext!.User.Identity!.IsAuthenticated)
+@if (auth.GetAuthenticationStateAsync().Result.User.Identity!.IsAuthenticated)
 {
     <MudCard Style="@($"background:{Colors.Grey.Lighten5}")" Class="d-flex">
     <MudContainer >
             <MudCardContent>
                 <MudText Class="mt-1" Typo="Typo.h5">Welcome!</MudText>
-                <MudText Class="mt-1" Typo="Typo.body1">@_context.HttpContext.User.Identity.Name</MudText>
+                <MudText Class="mt-1" Typo="Typo.body1">@auth.GetAuthenticationStateAsync().Result.User.Identity!.Name</MudText>
             </MudCardContent>
             <MudCardActions>
                 <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
@@ -37,46 +37,15 @@ else
 }
 
 @code{
-    private List<SessionModel>? SessionList = new List<SessionModel>();
-    private List<Smartwatch>? SmartwatchesList = new List<Smartwatch>();
-    private MudTable<Smartwatch>? table = new MudTable<Smartwatch>();
     private bool _readOnly;
     private bool _isCellEditMode;
     private bool _editTriggerRowClick;
     private string error = "";
-    private string value1;
     private bool arrows = true;
     private bool bullets = true;
     private bool enableSwipeGesture = true;
     private bool autocycle = true;
     private Transition transition = Transition.Slide;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
-
-            if (true)
-            {
-                Http = _fact.CreateClient(_conf["ApiLink"]);
-            }
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            SessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/GetAllSessions");
-            SmartwatchesList = await Http.GetFromJsonAsync<List<Smartwatch>>($"{_conf["ApiLink"]}/GetAllSmartwatches");
-        }
-        catch (Exception e)
-        {
-            error = e.Message;
-        }
-    }
-
-    private void ShowBtnPress(Guid sessionId)
-    {
-        SessionModel session = SessionList.First(x => x.SessionId == sessionId);
-        session.ShowDetails = !session.ShowDetails; 
-    }
 
     private void NavigateToStats()
     {

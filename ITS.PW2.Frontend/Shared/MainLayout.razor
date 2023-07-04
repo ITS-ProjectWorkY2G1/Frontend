@@ -1,4 +1,4 @@
-﻿@inject IHttpContextAccessor _context
+﻿@inject AuthenticationStateProvider auth;
 @inherits LayoutComponentBase
 
 <MudThemeProvider Theme="colorTheme"/>
@@ -12,7 +12,7 @@
         <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Href="/" />
         <MudText Class="ml-4" Typo="Typo.h5">Earth4Sport</MudText>
         <MudSpacer/>
-        @if (!_context.HttpContext!.User.Identity!.IsAuthenticated)
+        @if (!auth.GetAuthenticationStateAsync().Result.User.Identity!.IsAuthenticated)
         {
             <MudNavLink Style="width:fit-content"  Href="Authentication/Login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Person" IconColor="Color.Inherit">Login</MudNavLink>
         }
@@ -20,7 +20,7 @@
         {
             <MudMenu AnchorOrigin="Origin.BottomLeft" FullWidth="true">
                 <ActivatorContent>
-                    <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Warning" >@_context.HttpContext.User.Identity.Name</MudChip>
+                    <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Warning">@auth.GetAuthenticationStateAsync().Result.User.Identity!.Name</MudChip>
                 </ActivatorContent>
                 <ChildContent>
                     <MudNavLink Href="/profile">Profile</MudNavLink>
