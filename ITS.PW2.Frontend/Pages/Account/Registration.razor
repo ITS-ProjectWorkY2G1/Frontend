@@ -7,7 +7,7 @@
 @using Microsoft.AspNetCore.Authentication.Cookies;
 @using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 @using System.Net.Http.Headers;
-@inject IHttpContextAccessor _context;
+@*@inject IHttpContextAccessor _context;*@
 @inject NavigationManager navigation;
 @inject HttpClient Http;
 @inject IHttpClientFactory _fact
@@ -52,13 +52,13 @@
     {
         try
         {
-            var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
+            //var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
             var postBody = new UserModel() { Username = Username, Password = Password, Email = Email };
-            if (true)
-            {
-                Http = _fact.CreateClient(_conf["ApiLink"]);
-            }
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            //if (true)
+            //{
+            //    Http = _fact.CreateClient(_conf["ApiLink"]);
+            //}
+            //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await Http.PostAsJsonAsync($"{_conf["ApiLink"]}/api/Account/Register", postBody);
         }
@@ -90,7 +90,7 @@
     {
         if (pwField1.Value != arg)
             return "Passwords don't match";
-        return null;
+        return null!;
     }
 
 }
