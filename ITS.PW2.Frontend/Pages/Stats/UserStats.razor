@@ -7,7 +7,7 @@
 @inject HttpClient Http
 @inject IHttpClientFactory _fact
 @inject IConfiguration _conf
-@*@inject IHttpContextAccessor _context*@
+@inject IHttpContextAccessor _context
 
 <PageTitle>User Stats</PageTitle>
 
@@ -76,7 +76,7 @@ else
                 <ToolBarContent>
                     <MudDatePicker @ref="_picker" Label="Session Date" DateChanged="@(s => {_date = s ; OnDatePick(s); })" AutoClose="@autoClose">
                         <PickerActions>
-                            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
+                            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker!.Clear())">Clear</MudButton>
                             <MudButton OnClick="@(() => _picker!.Close(false))">Cancel</MudButton>
                             <MudButton Color="Color.Primary" OnClick="@(() => _picker!.Close())">Ok</MudButton>
                         </PickerActions>
@@ -88,7 +88,6 @@ else
             <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px">
             </MudChart>
         </MudItem>
-        @*<MudText>token: @token</MudText>*@
     </MudContainer>
 }
 
@@ -110,7 +109,6 @@ else
     private bool _isCellEditMode;
     private bool _editTriggerRowClick;
     private string error = "";
-    //private string? token = "ciao";
 
     public static double[] AvgHR = new double[8];
     public static double[] SessionDistance = new double[8];
@@ -123,15 +121,15 @@ else
         options.InterpolationOption = InterpolationOption.NaturalSpline;
         try
         {
-            //token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
+            var token = await _context.HttpContext!.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken)!;
 
             var id = auth.GetAuthenticationStateAsync().Result!.User.Claims.FirstOrDefault(x => x.Type == "Id")!.Value;
 
-            //if (true)
-            //{
-            //    Http = _fact.CreateClient(_conf["ApiLink"]);
-            //}
-            //Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);         
+            if (true)
+            {
+                Http = _fact.CreateClient(_conf["ApiLink"]);
+            }
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             FullSessionList = await Http.GetFromJsonAsync<List<SessionModel>>($"{_conf["ApiLink"]}/GetFullSessionsList?userId={id}");
             FullSessionList!.Reverse();

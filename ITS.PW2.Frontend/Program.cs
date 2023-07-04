@@ -61,7 +61,7 @@ builder.Services.AddAuthentication(o =>
 
 builder.Services.AddHttpClient();
 
-//builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
