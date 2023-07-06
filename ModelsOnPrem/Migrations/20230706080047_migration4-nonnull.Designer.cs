@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModelsOnPrem;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ModelsOnPrem.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    partial class PostgresContextModelSnapshot : ModelSnapshot
+    [Migration("20230706080047_migration4-nonnull")]
+    partial class migration4nonnull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,10 +39,6 @@ namespace ModelsOnPrem.Migrations
                     b.Property<string>("ProductionBatch")
                         .HasColumnType("text")
                         .HasColumnName("production_batch");
-
-                    b.Property<bool>("Show")
-                        .HasColumnType("boolean")
-                        .HasColumnName("show");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid")

@@ -12,12 +12,13 @@
 @using Models
 @using ModelsOnPrem
 @using ServicesOnPrem.Services
+@inject ISmartwatchServices _service
 
 <PageTitle>Earth4Sport</PageTitle>
 
 <MudContainer>
     <MudItem>
-        <MudTable CustomHeader="true" Items="smartwatchesOnPrems" Hover Striped Bordered="true" FixedHeader FixedFooter Dense>
+        <MudTable CustomHeader="true" Items="smartwatchesOnPrems" Hover Striped Bordered="true" FixedHeader FixedFooter Style="height:auto; width:190vh; margin-left:4vh;" Dense>
             <HeaderContent>
                 <MudTh>Id</MudTh>
                 <MudTh>Buying Date</MudTh>
@@ -27,7 +28,7 @@
                 <MudTd>@context.Id</MudTd>
                 <MudTd>@context.BuyingDate</MudTd>
                 <MudTd>@context.ProductionBatch</MudTd>
-                <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ShowBtnPress(context.Id))">@((ShowDetails == true) ? "Hide" : "Show") Session Details</MudButton></MudTd>
+                <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ShowBtnPress(context.Id))">@((context.Show == true) ? "Hide" : "Show") Session Details</MudButton></MudTd>
             </RowTemplate>
             <NoRecordsContent>
                 <MudText>No matching records found</MudText>
@@ -39,7 +40,7 @@
                 <MudTablePager />
             </PagerContent>
             <ChildRowContent>
-                @if (ShowDetails)
+                @if (context.Show)
                 {
                     <MudTr>
                         <td colspan="6">
@@ -50,11 +51,20 @@
                                             <MudTh>Timestamp</MudTh>
                                             <MudTh>Position</MudTh>
                                             <MudTh>HeartRate</MudTh>
+                                            <MudTh>Status</MudTh>
                                         </HeaderContent>
                                         <RowTemplate>
                                             <MudTd>@smart.Timestamp</MudTd>
                                             <MudTd>@smart.Position</MudTd>
                                             <MudTd>@smart.HeartRate</MudTd>
+                                            @if (smart.HeartRate > 100 || smart.HeartRate < 30)
+                                            {
+                                                <MudTd>❌</MudTd>
+                                            }
+                                            else
+                                            {
+                                                <MudTd>✅</MudTd>
+                                            }
                                         </RowTemplate>
                                     </MudTable>
                                 </MudCardContent>
@@ -71,8 +81,6 @@
     private List<SmartwatchesOnPrem>? smartwatchesOnPrems = new List<SmartwatchesOnPrem>();
     public List<Smartwatch>? smartwatches = new List<Smartwatch>();
     private string error = "";
-    public bool ShowDetails { get; set; }
-    private readonly SmartwatchServices? _smartwatchServices;
 
     protected override async Task OnInitializedAsync()
     {
@@ -83,8 +91,9 @@
                 Http = _fact.CreateClient(_conf["ApiLink"]!);
             }
 
-            //smartwatchesOnPrems = await _smartwatchServices!.GetSmartwatchesOnPremAsync();
-            smartwatches = await Http.GetFromJsonAsync<List<Smartwatch>>($"{_conf["ApiLink"]}/api/Smartwatch/GetAllSmartwatches");
+            smartwatchesOnPrems = await _service.GetSmartwatchesOnPremAsync();    
+            
+            smartwatches = await Http.GetFromJsonAsync<List<Smartwatch>>($"{_conf["ApiLink"]}/GetSmartwatchById?id={smartwatchesOnPrems.Last().Id}");
         }
         catch (Exception e)
         {
@@ -92,9 +101,9 @@
         }
     }
 
-    private void ShowBtnPress(Guid smartId)
+    private async void ShowBtnPress(Guid smartId)
     {
         SmartwatchesOnPrem smart = smartwatchesOnPrems!.First(x => x.Id == smartId);
-        ShowDetails = !ShowDetails;
+        smart.Show = !smart.Show;
     }
 }                               

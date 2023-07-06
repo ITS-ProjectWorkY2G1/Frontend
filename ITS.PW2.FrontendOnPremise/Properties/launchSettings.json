@@ -11,7 +11,8 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DB": "User ID=postgres;Password=password;Host=192.168.103.7;Port=5432;Database=postgres;"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000"

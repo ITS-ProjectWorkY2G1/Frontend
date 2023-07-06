@@ -8,10 +8,12 @@ namespace ModelsOnPrem
         [Column("id")]
         public Guid Id { get; set; }
         [Column("buying_date")]
-        public DateTime BuyingDate { get; set; }
+        public DateTime? BuyingDate { get; set; }
         [Column("production_batch")]
         public string? ProductionBatch { get; set; }
         [Column("user_id")]
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
+        [Column("show")]
+        public bool Show { get; set; } = false;
     }
 }

@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using Microsoft.EntityFrameworkCore;
+using ModelsOnPrem;
 using MudBlazor.Services;
+using ServicesOnPrem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,12 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
+builder.Services.AddScoped<ISmartwatchServices, SmartwatchServices>();
+
+builder.Services.AddDbContext<PostgresContext>(opt =>
+{
+    opt.UseNpgsql(Environment.GetEnvironmentVariable("DB"));
+});
 
 var _conf = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", optional: false)
